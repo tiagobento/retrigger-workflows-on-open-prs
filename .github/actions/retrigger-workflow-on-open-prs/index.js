@@ -29,7 +29,7 @@ async function run() {
   const githubApiDomain = `https://api.github.com`;
   const authHeaders = {
     headers: {
-      Authorization: "x-oauth-basic " + githubToken,
+      Authorization: "token " + githubToken,
       Accept: "application/vnd.github.v3+json"
     }
   };
