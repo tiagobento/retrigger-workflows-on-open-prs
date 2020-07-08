@@ -1,0 +1,26 @@
+{
+  "name": "retrigger-workflow-on-open-prs",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagobento/retrigger-workflow-on-open-prs.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tiagobento/retrigger-workflow-on-open-prs/issues"
+  },
+  "homepage": "https://github.com/tiagobento/retrigger-workflow-on-open-prs#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "@octokit/rest": "^17.11.2",
+    "@types/node-fetch": "^2.5.8",
+    "node-fetch": "^2.6.1"
+  }
+}
