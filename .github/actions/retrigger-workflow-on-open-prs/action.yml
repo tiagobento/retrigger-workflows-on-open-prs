@@ -1,0 +1,12 @@
+name: "Re-trigger workflow on open Pull Requests"
+description: "Re-triggers a configured workflow on open Pull Requests targeting a branch"
+inputs:
+  workflow_file:
+    description: "The workflow file to be re-triggered"
+    required: true
+  github_token:
+    description: "The token to authenticate Octokit"
+    required: true
+runs:
+  using: "node12"
+  main: "index.js"
