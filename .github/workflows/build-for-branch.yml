@@ -2,6 +2,7 @@ on: issue_comment
 
 jobs:
   one:
+    if: contains(github.event.comment.body, 'Deploy')
     runs-on: ubuntu-16.04
     steps:
       - name: Dump GitHub context
