@@ -25,8 +25,8 @@ jobs:
       - name: Print buildInfo
         id: pbuildInfo
         run: |
-          echo -n ${{ steps.buildInfo.user }}
-          echo -n ${{ steps.buildInfo.ref }}
+          echo -n ${{ steps.buildInfo.outputs.user }}
+          echo -n ${{ steps.buildInfo.outputs.ref }}
           
       - name: Dump GitHub context
         env:
