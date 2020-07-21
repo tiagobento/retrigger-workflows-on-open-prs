@@ -2,7 +2,7 @@ on: issue_comment
 
 jobs:
   one:
-    if: github.event == 'pull_request' || (github.event.issue.number == 3 && contains(github.event.comment.body, 'Build:'))
+    if: contains(github.event.comment.body, 'Build:')
     runs-on: ubuntu-16.04
     steps:
       - name: Get buildInfo
