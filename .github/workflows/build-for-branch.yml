@@ -5,6 +5,20 @@ jobs:
     if: contains(github.event.comment.body, 'Deploy')
     runs-on: ubuntu-16.04
     steps:
+      - name: Get buildInfo
+        id: buildInfo
+        run: |
+          if [ ${{ github.event.pull_request }} ]; then
+            x=${{ github.event.pull_request.user.login }}; 
+            y=${{ github.head_ref }};
+          else
+            x=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[0]"); 
+            y=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[1]"); 
+          fi
+          
+          echo ::set-output name=user::$x
+          echo ::set-output name=ref::$y
+          
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
