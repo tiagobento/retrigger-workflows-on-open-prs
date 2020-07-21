@@ -12,8 +12,8 @@ jobs:
         id: buildInfo
         run: |
           if [ -z "${{ github.event.pull_request }}" ]; then
-            x=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[0]"); 
-            y=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[1]");
+            x=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
+            y=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
           else 
             x=${{ github.event.pull_request.user.login }}; 
             y=${{ github.head_ref }};
