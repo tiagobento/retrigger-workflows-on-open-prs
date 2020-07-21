@@ -11,12 +11,12 @@ jobs:
       - name: Get buildInfo
         id: buildInfo
         run: |
-          if [ ${{ github.event.pull_request }} ]; then
+          if [ -z "${{ github.event.pull_request }}" ]; then
+            x=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[0]"); 
+            y=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[1]");
+          else 
             x=${{ github.event.pull_request.user.login }}; 
             y=${{ github.head_ref }};
-          else
-            x=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[0]"); 
-            y=$(node -e "'${{ github.event.comment.body }}'.match(/Build: (.)+\/(.)+/ig)[1]"); 
           fi
           
           echo ::set-output name=user::$x
