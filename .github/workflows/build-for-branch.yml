@@ -22,6 +22,12 @@ jobs:
           echo ::set-output name=user::$x
           echo ::set-output name=ref::$y
           
+      - name: Print buildInfo
+        id: pbuildInfo
+        run: |
+          echo -n ${{ github.steps.buildInfo.user }}
+          echo -n ${{ github.steps.buildInfo.ref }}
+          
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
