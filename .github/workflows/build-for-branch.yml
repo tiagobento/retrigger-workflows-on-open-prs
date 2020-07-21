@@ -1,8 +1,11 @@
-on: issue_comment
+on:
+  issue_comment:
+  pull_request:
+    branches: "**"
 
 jobs:
   one:
-    if: contains(github.event.comment.body, 'Deploy')
+    if: contains(github.event.comment.body, 'Build:')
     runs-on: ubuntu-16.04
     steps:
       - name: Get buildInfo
