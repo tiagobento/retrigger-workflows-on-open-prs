@@ -16,7 +16,7 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { Octokit } = require("@octokit/rest")
+const {Octokit} = require("@octokit/rest")
 const fetch = require("node-fetch");
 
 async function run() {
@@ -58,14 +58,16 @@ async function run() {
 
     return Promise.all(
         openPrs.filter(pr => !pr.user.login.includes("dependabot")).map(pr => {
-            // console.log(pr);
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
             return createEmptyCommitOnGitHub({
                 owner: pr.user.login,
                 repo: repo,
                 branch: pr.head.ref,
                 token: githubToken,
-                message: `New commit on '${branch}'! Re-triggering workflows.`,
+                message: `New commit on '${branch}'. Re-triggering workflows.`,
+            }).then(res => {
+                console.log(`Created ${res.object.sha} on #${pr.number}: ${pr.title}`)
+                return res.object.sha;
             });
         })
     );
@@ -101,7 +103,7 @@ function updateRef(octokit, data, sha) {
     return octokit.git.updateRef({
         owner: data.owner,
         repo: data.repo,
-        ref: data.fullyQualifiedRef,
+        ref: data.ref,
         sha: sha,
         force: data.forceUpdate
     }).then(res => res.data);
@@ -116,7 +118,7 @@ function createEmptyCommitOnGitHub(opts) {
     const data = {
         owner: opts.owner,
         repo: opts.repo,
-        fullyQualifiedRef: opts.branch ? `heads/${opts.branch}` : opts.fullyQualifiedRef || 'heads/main',
+        ref: opts.branch ? `heads/${opts.branch}` : opts.ref || 'heads/main',
         forceUpdate: opts.forceUpdate || false,
         commitMessage: opts.message
     }
@@ -126,11 +128,7 @@ function createEmptyCommitOnGitHub(opts) {
     return getRef(octokit, data)
         .then(sha => getCommitTree(octokit, data, sha))
         .then(tree => createEmptyCommit(octokit, data, tree))
-        .then(sha => updateRef(octokit, data, sha))
-        .then(res => {
-            console.log(`Created ${res.object.sha} on ${opts.owner}`)
-            return res.object.sha;
-        });
+        .then(sha => updateRef(octokit, data, sha));
 }
 
 run()
