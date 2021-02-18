@@ -10,11 +10,8 @@ jobs:
     strategy:
       fail-fast: true
 
-
     steps:
       - uses: actions/checkout@v2
-      
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       - name: Run echo
         id: echo

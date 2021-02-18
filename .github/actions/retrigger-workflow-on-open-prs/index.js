@@ -19,59 +19,6 @@ const github = require("@actions/github");
 const {Octokit} = require("@octokit/rest")
 const fetch = require("node-fetch");
 
-async function run() {
-
-    console.log("OIE");
-
-    const workflowFile = core.getInput("workflow_file");
-    const githubToken = core.getInput("github_token");
-
-    const owner = github.context.repo.owner;
-    const repo = github.context.repo.repo;
-    const branch = github.context.ref.split("/").pop();
-
-    const githubApiDomain = `https://api.github.com`;
-    const authHeaders = {
-        headers: {
-            Authorization: "token " + githubToken,
-            Accept: "application/vnd.github.v3+json"
-        }
-    };
-
-    const workflows = await fetch(`${githubApiDomain}/repos/${owner}/${repo}/actions/workflows`, authHeaders)
-        .then(c => c.json())
-        .then(c => c.workflows);
-
-    const workflow = workflows.filter(w => w.path.endsWith(workflowFile)).pop();
-    if (!workflow) {
-        throw new Error(`There's no workflow file called '${workflowFile}'`);
-    }
-
-    console.info(`Workflow '${workflowFile}' has id ${workflow.id}`);
-
-    const openPrs = await fetch(
-        `${githubApiDomain}/repos/${owner}/${repo}/pulls?state=open&base=${branch}`,
-        authHeaders
-    ).then(c => c.json());
-
-    console.info(`Found ${openPrs.length} open PRs targeting '${branch}'`);
-
-    return Promise.all(
-        openPrs.filter(pr => !pr.user.login.includes("dependabot")).map(pr => {
-            console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
-            return createEmptyCommitOnGitHub({
-                owner: pr.user.login,
-                repo: repo,
-                ref: `heads/${pr.head.ref}`,
-                token: githubToken,
-                message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
-            }).then(res => {
-                console.log(`Created ${res.object.sha} on #${pr.number}: ${pr.title}`)
-                return res.object.sha;
-            });
-        })
-    );
-}
 
 function getRef(octokit, data) {
     return octokit.git.getRef({
@@ -128,6 +75,45 @@ function createEmptyCommitOnGitHub(opts) {
         .then(sha => getCommitTree(octokit, data, sha))
         .then(tree => createEmptyCommit(octokit, data, tree))
         .then(sha => updateRef(octokit, data, sha));
+}
+
+async function run() {
+
+    const githubToken = core.getInput("github_token");
+
+    const owner = github.context.repo.owner;
+    const repo = github.context.repo.repo;
+    const branch = github.context.ref.split("/").pop();
+
+    const githubApiDomain = `https://api.github.com`;
+    const authHeaders = {
+        headers: {
+            Authorization: "token " + githubToken,
+            Accept: "application/vnd.github.v3+json"
+        }
+    };
+
+    const openPrs = await fetch(`${githubApiDomain}/repos/${owner}/${repo}/pulls?state=open&base=${branch}`, authHeaders)
+        .then(c => c.json())
+        .filter(pr => !pr.user.login.includes("dependabot"));
+
+    console.info(`Found ${openPrs.length} open PRs targeting '${branch}'`);
+
+    const newCommits = openPrs.map(pr => {
+        console.log(`Re-triggering workflows on #${pr.number}: ${pr.title}`);
+        return createEmptyCommitOnGitHub({
+            owner: pr.user.login,
+            repo: repo,
+            ref: `heads/${pr.head.ref}`,
+            token: githubToken,
+            message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
+        }).then(res => {
+            console.log(`Created ${res.object.sha} on #${pr.number}: ${pr.title}`)
+            return res.object.sha;
+        });
+    })
+
+    return Promise.all(newCommits);
 }
 
 run()
