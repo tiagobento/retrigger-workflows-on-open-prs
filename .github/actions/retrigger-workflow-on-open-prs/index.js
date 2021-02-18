@@ -62,9 +62,9 @@ async function run() {
             return createEmptyCommitOnGitHub({
                 owner: pr.user.login,
                 repo: repo,
-                branch: pr.head.ref,
+                ref: `heads/${pr.head.ref}`,
                 token: githubToken,
-                message: `New commit on '${branch}'. Re-triggering workflows.`,
+                message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
             }).then(res => {
                 console.log(`Created ${res.object.sha} on #${pr.number}: ${pr.title}`)
                 return res.object.sha;
@@ -77,7 +77,7 @@ function getRef(octokit, data) {
     return octokit.git.getRef({
         owner: data.owner,
         repo: data.repo,
-        ref: data.fullyQualifiedRef
+        ref: data.ref
     }).then(res => res.data.object.sha);
 }
 
@@ -93,7 +93,7 @@ function createEmptyCommit(octokit, data, tree) {
     return octokit.git.createCommit({
         owner: data.owner,
         repo: data.repo,
-        message: data.commitMessage,
+        message: data.message,
         tree: tree.sha,
         parents: [tree.commitSha]
     }).then(res => res.data.sha)
@@ -105,22 +105,21 @@ function updateRef(octokit, data, sha) {
         repo: data.repo,
         ref: data.ref,
         sha: sha,
-        force: data.forceUpdate
+        force: false
     }).then(res => res.data);
 }
 
 function createEmptyCommitOnGitHub(opts) {
 
-    if (!opts || !opts.owner || !opts.repo || !opts.message || !opts.token) {
+    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.message || !opts.token) {
         return Promise.reject(new Error('Invalid parameters'))
     }
 
     const data = {
         owner: opts.owner,
         repo: opts.repo,
-        ref: opts.branch ? `heads/${opts.branch}` : opts.ref || 'heads/main',
-        forceUpdate: opts.forceUpdate || false,
-        commitMessage: opts.message
+        ref: opts.ref || 'heads/main',
+        message: opts.message
     }
 
     const octokit = new Octokit({auth: opts.token});
