@@ -16,7 +16,7 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const {Octokit} = require("@octokit/rest")
+const { Octokit } = require("@octokit/rest")
 const fetch = require("node-fetch");
 
 async function run() {
@@ -58,16 +58,14 @@ async function run() {
 
     return Promise.all(
         openPrs.filter(pr => !pr.user.login.includes("dependabot")).map(pr => {
+            // console.log(pr);
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
             return createEmptyCommitOnGitHub({
                 owner: pr.user.login,
                 repo: repo,
-                ref: `heads/${pr.head.ref}`,
+                branch: pr.head.ref,
                 token: githubToken,
-                message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
-            }).then(res => {
-                console.log(`Created ${res.object.sha} on #${pr.number}: ${pr.title}`)
-                return res.object.sha;
+                message: `New commit on '${branch}'! Re-triggering workflows.`,
             });
         })
     );
@@ -93,7 +91,7 @@ function createEmptyCommit(octokit, data, tree) {
     return octokit.git.createCommit({
         owner: data.owner,
         repo: data.repo,
-        message: data.message,
+        message: data.commitMessage,
         tree: tree.sha,
         parents: [tree.commitSha]
     }).then(res => res.data.sha)
@@ -103,23 +101,24 @@ function updateRef(octokit, data, sha) {
     return octokit.git.updateRef({
         owner: data.owner,
         repo: data.repo,
-        ref: data.ref,
+        ref: data.fullyQualifiedRef,
         sha: sha,
-        force: false
+        force: data.forceUpdate
     }).then(res => res.data);
 }
 
 function createEmptyCommitOnGitHub(opts) {
 
-    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.message || !opts.token) {
+    if (!opts || !opts.owner || !opts.repo || !opts.message || !opts.token) {
         return Promise.reject(new Error('Invalid parameters'))
     }
 
     const data = {
         owner: opts.owner,
         repo: opts.repo,
-        ref: opts.ref || 'heads/main',
-        message: opts.message
+        fullyQualifiedRef: opts.branch ? `heads/${opts.branch}` : opts.fullyQualifiedRef || 'heads/main',
+        forceUpdate: opts.forceUpdate || false,
+        commitMessage: opts.message
     }
 
     const octokit = new Octokit({auth: opts.token});
@@ -127,7 +126,11 @@ function createEmptyCommitOnGitHub(opts) {
     return getRef(octokit, data)
         .then(sha => getCommitTree(octokit, data, sha))
         .then(tree => createEmptyCommit(octokit, data, tree))
-        .then(sha => updateRef(octokit, data, sha));
+        .then(sha => updateRef(octokit, data, sha))
+        .then(res => {
+            console.log(`Created ${res.object.sha} on ${opts.owner}`)
+            return res.object.sha;
+        });
 }
 
 run()
