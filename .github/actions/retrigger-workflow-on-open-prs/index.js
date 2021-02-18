@@ -71,6 +71,7 @@ async function run() {
 }
 
 function getRef(octokit, data) {
+    console.log("getRef")
     return octokit.git.getRef({
         owner: data.owner,
         repo: data.repo,
@@ -79,6 +80,7 @@ function getRef(octokit, data) {
 }
 
 function getCommitTree(octokit, data, sha) {
+    console.log("getCommitTree")
     return octokit.repos.getCommit({
         owner: data.owner,
         repo: data.repo,
@@ -87,6 +89,7 @@ function getCommitTree(octokit, data, sha) {
 }
 
 function createEmptyCommit(octokit, data, tree) {
+    console.log("createEmptyCommit")
     return octokit.git.createCommit({
         owner: data.owner,
         repo: data.repo,
@@ -97,6 +100,7 @@ function createEmptyCommit(octokit, data, tree) {
 }
 
 function updateRef(octokit, data, sha) {
+    console.log("updateRef")
     return octokit.git.updateRef({
         owner: data.owner,
         repo: data.repo,
@@ -107,6 +111,8 @@ function updateRef(octokit, data, sha) {
 }
 
 function createEmptyCommitOnGitHub(opts) {
+    console.log("createEmptyCommitOnGitHub")
+
     if (!opts || !opts.owner || !opts.repo || !opts.message || !opts.token) {
         return Promise.reject(new Error('Invalid parameters'))
     }
