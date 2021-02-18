@@ -16,7 +16,6 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-// const { Octokit } = require("@octokit/rest")
 const fetch = require("node-fetch");
 
 async function run() {
@@ -66,67 +65,6 @@ async function run() {
             // });
         })
     );
-}
-
-function getRef(octokit, data) {
-    return octokit.git.getRef({
-        owner: data.owner,
-        repo: data.repo,
-        ref: data.fullyQualifiedRef
-    }).then(res => res.data.object.sha);
-}
-
-function getCommitTree(octokit, data, sha) {
-    return octokit.repos.getCommit({
-        owner: data.owner,
-        repo: data.repo,
-        sha: sha
-    }).then(res => ({sha: res.data.commit.tree.sha, commitSha: sha}));
-}
-
-function createEmptyCommit(octokit, data, tree) {
-    return octokit.git.createCommit({
-        owner: data.owner,
-        repo: data.repo,
-        message: data.commitMessage,
-        tree: tree.sha,
-        parents: [tree.commitSha]
-    }).then(res => res.data.sha)
-}
-
-function updateRef(octokit, data, sha) {
-    return octokit.git.updateRef({
-        owner: data.owner,
-        repo: data.repo,
-        ref: data.fullyQualifiedRef,
-        sha: sha,
-        force: data.forceUpdate
-    }).then(res => res.data);
-}
-
-function createEmptyCommitOnGitHub(opts) {
-    if (!opts || !opts.owner || !opts.repo || !opts.message || !opts.token) {
-        return Promise.reject(new Error('Invalid parameters'))
-    }
-
-    const data = {
-        owner: opts.owner,
-        repo: opts.repo,
-        fullyQualifiedRef: opts.branch ? `heads/${opts.branch}` : opts.fullyQualifiedRef || 'heads/main',
-        forceUpdate: opts.forceUpdate || false,
-        commitMessage: opts.message
-    }
-
-    const octokit = new Octokit({auth: opts.token});
-
-    return getRef(octokit, data)
-        .then(sha => getCommitTree(octokit, data, sha))
-        .then(tree => createEmptyCommit(octokit, data, tree))
-        .then(sha => updateRef(octokit, data, sha))
-        .then(res => {
-            console.log('Created new commit with SHA => ', res.object.sha)
-            return res.object.sha;
-        });
 }
 
 run()
