@@ -20,6 +20,7 @@ const { Octokit } = require("@octokit/rest")
 const fetch = require("node-fetch");
 
 async function run() {
+
     const workflowFile = core.getInput("workflow_file");
     const githubToken = core.getInput("github_token");
 

@@ -19,7 +19,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@octokit/rest": "^18.1.1",
+    "@octokit/rest": "^17.11.2",
     "@types/node-fetch": "^2.5.8",
     "node-fetch": "^2.6.1"
   }
