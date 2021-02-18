@@ -16,7 +16,7 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { Octokit } = require("@octokit/rest")
+// const { Octokit } = require("@octokit/rest")
 const fetch = require("node-fetch");
 
 async function run() {
@@ -57,13 +57,13 @@ async function run() {
     return Promise.all(
         openPrs.map(pr => {
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
-            return createEmptyCommitOnGitHub({
-                owner: owner,
-                repo: repo,
-                branch: branch,
-                token: githubToken,
-                message: `New commit on '${branch}'! Re-triggering workflows.`,
-            });
+            // return createEmptyCommitOnGitHub({
+            //     owner: owner,
+            //     repo: repo,
+            //     branch: branch,
+            //     token: githubToken,
+            //     message: `New commit on '${branch}'! Re-triggering workflows.`,
+            // });
         })
     );
 }
