@@ -82,10 +82,10 @@ function getRef(octokit, data) {
 
 function getCommitTree(octokit, data, sha) {
     console.log(`getCommitTree: sha -> '${sha}'`)
-    return octokit.git.getCommit({
+    return octokit.repos.getCommit({
         owner: data.owner,
         repo: data.repo,
-        commit_sha: sha
+        ref: sha
     }).then(res => ({sha: res.data.commit.tree.sha, commitSha: sha}));
 }
 
