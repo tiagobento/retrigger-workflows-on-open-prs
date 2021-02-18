@@ -1,9 +1,6 @@
 name: CI
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [master]
   pull_request:
     branches: "**"
 
@@ -16,9 +13,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-      # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Run echo
         id: echo
         run: |
