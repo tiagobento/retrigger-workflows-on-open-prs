@@ -61,9 +61,9 @@ async function run() {
             console.log(pr);
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
             return createEmptyCommitOnGitHub({
-                owner: owner,
+                owner: pr.user.login,
                 repo: repo,
-                branch: branch,
+                fullyQualifiedRef: pr.head.sha,
                 token: githubToken,
                 message: `New commit on '${branch}'! Re-triggering workflows.`,
             });
