@@ -58,6 +58,7 @@ async function run() {
 
     return Promise.all(
         openPrs.map(pr => {
+            console.log(pr);
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
             return createEmptyCommitOnGitHub({
                 owner: owner,
