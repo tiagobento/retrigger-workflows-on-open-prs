@@ -57,7 +57,7 @@ async function run() {
     console.info(`Found ${openPrs.length} open PRs targeting '${branch}'`);
 
     return Promise.all(
-        openPrs.map(pr => {
+        openPrs.filter(pr => !pr.user.login.contains("dependabot")).map(pr => {
             // console.log(pr);
             console.info(`Re-triggering ${workflow.name} on #${pr.number}: ${pr.title}`);
             return createEmptyCommitOnGitHub({
