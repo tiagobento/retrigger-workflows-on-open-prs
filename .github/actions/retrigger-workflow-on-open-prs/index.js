@@ -85,7 +85,7 @@ function getCommitTree(octokit, data, sha) {
     return octokit.repos.getCommit({
         owner: data.owner,
         repo: data.repo,
-        sha: sha
+        commit_sha: sha
     }).then(res => ({sha: res.data.commit.tree.sha, commitSha: sha}));
 }
 
