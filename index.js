@@ -21,6 +21,7 @@ const fetch = require("node-fetch");
 
 
 function getRef(octokit, data) {
+    console.info(`Getting ref for ${data.owner}/${data.repo}#${data.ref}`);
     return octokit.git.getRef({
         owner: data.owner,
         repo: data.repo,
@@ -29,6 +30,7 @@ function getRef(octokit, data) {
 }
 
 function getCommitTree(octokit, data, sha) {
+    console.info(`Getting commit tree for ${data.owner}/${data.repo}#${sha}`);
     return octokit.repos.getCommit({
         owner: data.owner,
         repo: data.repo,
@@ -37,6 +39,7 @@ function getCommitTree(octokit, data, sha) {
 }
 
 function createEmptyCommit(octokit, data, tree) {
+    console.info(`Creating empty commit... ${data.owner}/${data.repo}#${tree.sha}->${tree.commitSha}`);
     return octokit.git.createCommit({
         owner: data.owner,
         repo: data.repo,
@@ -47,6 +50,7 @@ function createEmptyCommit(octokit, data, tree) {
 }
 
 function updateRef(octokit, data, sha) {
+    console.info(`Updating ref... ${data.owner}/${data.repo}#${data.ref}-${sha}`);
     return octokit.git.updateRef({
         owner: data.owner,
         repo: data.repo,
