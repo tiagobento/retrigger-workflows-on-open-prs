@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: tiagobento/retrigger-workflow-on-open-prs@master
+      - uses: tiagobento/retrigger-workflows-on-open-prs@master
         with:
           github_token: ${{ secrets.RETRIGGER_CI_ON_OPEN_PRS_GITHUB_TOKEN }}
