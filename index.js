@@ -101,7 +101,7 @@ async function run() {
         .then(c => c.json())
         .then(prs => prs.filter(pr => !pr.user.login.includes("dependabot")));
 
-    console.log(`Found ${openPrs.length} open PRs targeting '${branch}'`);
+    console.log(`Found ${openPrs.length} open PR(s) targeting '${branch}'`);
 
     const newCommits = openPrs.map(pr => {
         console.log(`Re-triggering workflows on #${pr.number}: ${pr.title}`);
