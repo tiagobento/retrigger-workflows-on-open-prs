@@ -10,6 +10,8 @@ This GitHub Action simply identifies the open PRs targeting the branch where the
 
 **NOTE:** The provided GitHub Token must be a Maintainer of the repository, otherwise it won't be able to push to PR branches. Also, the PRs to be updated must have "Allow edits from Maintainers" checked.
 
+**NOTE:** The provided GitHub Token must have the `repo/public_repo` scope to be able to push commits.
+
 ### Important notes
 
 Everything comes with a cost. This action is not different, so there are some drawbacks:
