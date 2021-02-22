@@ -1,6 +1,6 @@
 # Re-trigger Workflows on open PRs
 
-GitHub Action to re-trigger Workflows on open PRs when a commit happens on this PRs base branch.
+GitHub Action to re-trigger Workflows on open PRs when a commit happens on these PRs' base branches.
 
 ### Motivation
 
