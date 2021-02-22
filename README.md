@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: tiagobento/retrigger-workflows-on-open-prs@master**
+      - uses: tiagobento/retrigger-workflows-on-open-prs@master
         with:
           github_token: ${{ secrets.MY_TOKEN_WITH_MAINTAINER_PERMISSIONS }}
 ```
