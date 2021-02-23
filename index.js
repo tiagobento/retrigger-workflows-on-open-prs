@@ -117,7 +117,7 @@ async function run() {
         });
     })
 
-    return Promise.all(newCommits);
+    return Promise.allSettled(newCommits).then(results => results.indexOf("rejected") !== -1 ? Promise.reject() : Promise.resolve());
 }
 
 run()
