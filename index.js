@@ -105,10 +105,11 @@ async function run() {
 
     const newCommits = openPrs.map(pr => {
         console.log(`Re-triggering workflows on #${pr.number}: ${pr.title}`);
+        console.log(pr);
         return createEmptyCommitOnGitHub({
             owner: pr.user.login,
             repo: repo,
-            ref: `heads/${pr.head.ref}`,
+            ref: `heads/pull/${pr.number}/head`,
             token: githubToken,
             message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
         }).then(res => {
@@ -117,7 +118,7 @@ async function run() {
         });
     })
 
-    return Promise.allSettled(newCommits).then(results => results.indexOf("rejected") !== -1 ? Promise.reject() : Promise.resolve());
+    return Promise.allSettled(newCommits).then(results => results.map(r => r.status).indexOf("rejected") !== -1 ? Promise.reject() : Promise.resolve());
 }
 
 run()
