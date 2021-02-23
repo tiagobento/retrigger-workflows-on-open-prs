@@ -106,7 +106,7 @@ async function run() {
     const newCommits = openPrs.map(pr => {
         console.log(`Re-triggering workflows on #${pr.number}: ${pr.title}`);
         return createEmptyCommitOnGitHub({
-            owner: pr.user.login,
+            owner: pr.head.user.login,
             repo: repo,
             ref: `heads/${pr.head.ref}`,
             token: githubToken,
