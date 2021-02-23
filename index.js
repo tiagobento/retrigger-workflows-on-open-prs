@@ -109,7 +109,7 @@ async function run() {
         return createEmptyCommitOnGitHub({
             owner: pr.user.login,
             repo: repo,
-            ref: `heads/pull/${pr.number}/head`,
+            ref: `pull/${pr.number}/head`,
             token: githubToken,
             message: `New commit on '${branch}'. Re-triggering workflows 🚀`,
         }).then(res => {
@@ -118,7 +118,7 @@ async function run() {
         });
     })
 
-    return Promise.allSettled(newCommits).then(results => results.map(r => r.status).indexOf("rejected") !== -1 ? Promise.reject() : Promise.resolve());
+    return Promise.all(newCommits);
 }
 
 run()
