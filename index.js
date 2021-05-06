@@ -21,7 +21,7 @@ const fetch = require("node-fetch");
 
 async function dispatchWorkflowEvent(octokit, data) {
     console.info(`Dispatching "workflow_dispatch"... ${data.owner}/${data.repo}/${data.ref}`);
-    return octokit.git.actions.createWorkflowDispatch({
+    return octokit.request(`POST /repos/${data.owner}/${data.repo}/actions/workflows/${data.workflow_id}/dispatches`, {
         owner: data.owner,
         repo: data.repo,
         ref: data.ref,
@@ -31,7 +31,7 @@ async function dispatchWorkflowEvent(octokit, data) {
 
 async function dispatchWorkflowEventToGithub(opts) {
 
-    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.message || !opts.token || !opts.workflow_id) {
+    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.token || !opts.workflow_id) {
         return Promise.reject(new Error('Invalid parameters'))
     }
 
@@ -42,9 +42,9 @@ async function dispatchWorkflowEventToGithub(opts) {
         message: opts.message
     }
 
-    const octokit = new Octokit({auth: opts.token});
+    const octokit = new Octokit({ auth: opts.token });
 
-    return dispatchWorkflowEvent(octokit, data, tree);
+    return dispatchWorkflowEvent(octokit, data);
 }
 
 async function run() {
