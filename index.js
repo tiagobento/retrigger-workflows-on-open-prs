@@ -38,15 +38,16 @@ async function dispatchWorkflowEvent(octokit, data) {
 
     let workflowRun = await getWorkflowRunForBranch(octokit, data);
 
-    if (workflowRun.status === 'queued' || workflowRun.status === 'in_progress') {
+    if (workflowRun.status !== 'completed') {
         await octokit.actions.cancelWorkflowRun({
             owner: data.owner,
             repo: data.repo,
             run_id: workflowRun.id
         });
-        // sleep for 5 seconds for the cancel to take effect
-        await new Promise(resolve => setTimeout(resolve, 10000));
     }
+
+    // sleep for 5 seconds for the cancel to take effect
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     workflowRun = await getWorkflowRunForBranch(octokit, data);
     console.error(workflowRun);
