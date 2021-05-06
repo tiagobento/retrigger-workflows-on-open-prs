@@ -28,7 +28,7 @@ async function dispatchWorkflowEvent(octokit, data) {
         owner: data.owner,
         repo: data.repo,
         run_id: workflowRun.id
-    }).then(res => res.data.sha)
+    });
 }
 
 async function getWorkflowRunForBranch(octokit, data) {
@@ -97,7 +97,6 @@ async function run() {
             workflow_id: workflowId 
         }).then(res => {
             console.log(`Dispatched workflowId on #${pr.number}: ${pr.title}`)
-            return res.object.sha;
         });
     })
 
