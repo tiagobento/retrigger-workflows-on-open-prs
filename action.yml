@@ -2,7 +2,10 @@ name: "Re-trigger Workflows on open PRs"
 description: "Re-triggers Workflows on open Pull Requests by pushing an empty commit to the PR branch."
 inputs:
   github_token:
-    description: "The token to authenticate Octokit. This token will also be used to push a new commit to open PRs."
+    description: "The token to authenticate Octokit. This token will also be used to dispatch worfklow events."
+    required: true
+  workflow_id:
+    description: "The workflow_id to trigger."
     required: true
 runs:
   using: "node12"
