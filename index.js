@@ -22,14 +22,14 @@ const fetch = require("node-fetch");
 
 async function waitForCanceledRun(octokit, data) {
 
-    await octokit.actions.cancelWorkflowRun({
-        owner: data.owner,
-        repo: data.repo,
-        run_id: workflowRun.id
-    });
+    console.info(`Waiting for workflow to cancel... ${data.owner}/${data.repo}/${data.ref}`);
+    await new Promise(resolve => setTimeout(resolve, 4000));
 
-    // sleep for 5 seconds for the cancel to take effect
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    let workflowRun = await getWorkflowRunForBranch(octokit, data);
+
+    if (workflowRun.status !== 'completed') {
+        await cancelWorkflowRun(octokit, data);
+    }
 
 }
 
@@ -44,10 +44,9 @@ async function dispatchWorkflowEvent(octokit, data) {
             repo: data.repo,
             run_id: workflowRun.id
         });
-    }
 
-    // sleep for 5 seconds for the cancel to take effect
-    await new Promise(resolve => setTimeout(resolve, 10000));
+        await waitForCanceledRun(octokit, data);
+    }
 
     workflowRun = await getWorkflowRunForBranch(octokit, data);
     console.error(workflowRun);
