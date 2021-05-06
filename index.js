@@ -21,12 +21,29 @@ const fetch = require("node-fetch");
 
 async function dispatchWorkflowEvent(octokit, data) {
     console.info(`Dispatching "workflow_dispatch"... ${data.owner}/${data.repo}/${data.ref}`);
-    return octokit.request(`POST /repos/${data.owner}/${data.repo}/actions/workflows/${data.workflow_id}/dispatches`, {
+
+    const workflowRun = await getWorkflowRunForBranch(octokit, data);
+
+    return octokit.actions.reRunWorkflow({
         owner: data.owner,
         repo: data.repo,
-        ref: data.ref,
-        workflow_id: data.workflow_id
+        run_id: workflowRun.id
     }).then(res => res.data.sha)
+}
+
+async function getWorkflowRunForBranch(octokit, data) {
+    const response = await octokit.actions.listWorkflowRunsForRepo({
+        owner: data.owner,
+        repo: data.repo,
+        branch: data.ref,
+        event: 'pull_request'
+    });
+
+    try {
+        return response.data.workflow_runs[0];
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 async function dispatchWorkflowEventToGithub(opts) {
@@ -75,7 +92,7 @@ async function run() {
         return dispatchWorkflowEventToGithub({
             owner: pr.head.user.login,
             repo: repo,
-            ref: `heads/${pr.head.ref}`,
+            ref: pr.head.ref,
             token: githubToken,
             workflow_id: workflowId 
         }).then(res => {
