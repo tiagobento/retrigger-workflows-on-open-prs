@@ -28,7 +28,7 @@ async function waitForCanceledRun(octokit, data) {
     let workflowRun = await getWorkflowRunForBranch(octokit, data);
 
     if (workflowRun.status !== 'completed') {
-        await cancelWorkflowRun(octokit, data);
+        await waitForCanceledRun(octokit, data);
     }
 
 }
