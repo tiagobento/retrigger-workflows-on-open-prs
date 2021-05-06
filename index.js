@@ -67,7 +67,6 @@ async function dispatchWorkflowEventToGithub(opts) {
 async function run() {
 
     const githubToken = core.getInput("github_token");
-    const workflowId = core.getInput("workflow_id");
 
     const owner = github.context.repo.owner;
     const repo = github.context.repo.repo;
@@ -93,8 +92,7 @@ async function run() {
             owner: pr.head.user.login,
             repo: repo,
             ref: pr.head.ref,
-            token: githubToken,
-            workflow_id: workflowId 
+            token: githubToken
         }).then(res => {
             console.log(`Dispatched workflowId on #${pr.number}: ${pr.title}`)
         });

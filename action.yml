@@ -4,9 +4,6 @@ inputs:
   github_token:
     description: "The token to authenticate Octokit. This token will also be used to dispatch worfklow events."
     required: true
-  workflow_id:
-    description: "The workflow_id to trigger."
-    required: true
 runs:
   using: "node12"
   main: "index.js"
