@@ -48,7 +48,7 @@ async function getWorkflowRunForBranch(octokit, data) {
 
 async function dispatchWorkflowEventToGithub(opts) {
 
-    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.token || !opts.workflow_id) {
+    if (!opts || !opts.owner || !opts.repo || !opts.ref || !opts.token) {
         return Promise.reject(new Error('Invalid parameters'))
     }
 
