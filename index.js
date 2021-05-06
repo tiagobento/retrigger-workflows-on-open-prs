@@ -38,7 +38,7 @@ async function dispatchWorkflowEvent(octokit, data) {
 
     let workflowRun = await getWorkflowRunForBranch(octokit, data);
 
-    if (workflowRun.status === 'queued') {
+    if (workflowRun.status === 'queued' || workflowRun.status === 'in_progress') {
         await octokit.actions.cancelWorkflowRun({
             owner: data.owner,
             repo: data.repo,
