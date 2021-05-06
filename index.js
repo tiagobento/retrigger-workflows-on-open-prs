@@ -24,6 +24,8 @@ async function dispatchWorkflowEvent(octokit, data) {
 
     const workflowRun = await getWorkflowRunForBranch(octokit, data);
 
+    console.error(workflowRun);
+
     return octokit.actions.reRunWorkflow({
         owner: data.owner,
         repo: data.repo,
