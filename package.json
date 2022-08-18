@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/tiagobento/retrigger-workflows-on-open-prs#readme",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^4.0.0",
     "@octokit/rest": "^17.11.2",
     "@types/node-fetch": "^2.5.8",
